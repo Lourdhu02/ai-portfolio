@@ -8,3 +8,7 @@ Thumbs.db
 __pycache__/
 *.pyc
 .venv/
+.next/
+tsconfig.tsbuildinfo
+next-env.d.ts
+.turbo/

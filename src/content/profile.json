@@ -1,0 +1,14 @@
+{
+  "name": "Spacedrift",
+  "title": "Full-Stack Engineer · AI Systems Architect · Creative Technologist",
+  "subtitle": "Building intelligent, beautiful systems at the intersection of AI and user experience",
+  "bio": "Full-stack engineer and AI systems architect specializing in building intelligent, interactive web experiences. Passionate about combining cutting-edge AI with thoughtful design to create systems that feel alive. Experienced in React, Next.js, LLM orchestration, vector databases, and cinematic web animation.",
+  "email": "hello@spacedrift.dev",
+  "location": "Remote",
+  "avatar": "/profile.webp",
+  "social": {
+    "github": "https://github.com/spacedrift",
+    "linkedin": "https://linkedin.com/in/spacedrift",
+    "twitter": "https://twitter.com/spacedrift"
+  }
+}
