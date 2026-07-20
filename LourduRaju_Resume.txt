@@ -1,0 +1,99 @@
+
+                                                 Lourdu Raju
+                            Machine Learning Engineer — GenAI | Computer Vision | Production ML
+                               Bengaluru, India | +91 99595 94460 | b.lourdhuraju1234@gmail.com
+                           linkedin.com/in/lourdhu | github.com/Lourdhu02 | kaggle.com/blourdhuraju
+
+Professional Summary
+
+Machine Learning Engineer with 2 years of experience building production GenAI, NLP, and Computer Vision
+systems at scale. Specialized in agentic AI (LangGraph, RAG, LoRA fine-tuning), low-latency model serving
+(vLLM, ONNX, TensorRT), and full-stack ML deployment (FastAPI, Docker, Kubernetes, AWS SageMaker).
+Strong CS foundations — data structures & algorithms, ML system design, and distributed systems. Kaggle
+Expert currently architecting Transformer-based OCR pipelines at production scale.
+
+Technical Skills
+
+  Languages: Python, SQL, C++, Bash
+  ML / Deep Learning: PyTorch, TensorFlow, Hugging Face Transformers, scikit-learn, NumPy, Pandas, OpenCV,
+  XGBoost
+  GenAI & LLM: LangChain, LangGraph, LlamaIndex, Ollama, vLLM; OpenAI / Anthropic / Groq APIs; LoRA
+  fine-tuning, prompt engineering, function calling, agentic systems
+  RAG & Vector Search: Hybrid retrieval, dense embeddings, reranking, semantic search; ChromaDB, Qdrant, Pinecone,
+  FAISS; sentence-transformers
+  Computer Vision & NLP: ViT, YOLO, CLIP; OCR (CRNN, SVRT, SVTR, PaddleOCR); BERT, RoBERTa, T5;
+  spaCy, NLTK
+  MLOps, Cloud & Databases: ONNX, TensorRT, INT8 quantization; FastAPI, REST / gRPC; Docker, Kubernetes;
+  MLflow, Weights & Biases, DVC, Git, GitHub Actions, CI / CD; AWS (EC2, Lambda, S3, SageMaker), GCP (Vertex AI);
+  PostgreSQL, MongoDB, Redis
+  CS Foundations & Math: Data Structures & Algorithms, ML system design, OOP, operating systems, computer
+  networks, DBMS; linear algebra, probability, statistics
+
+Experience
+
+  Sujanix Private Limited                                                                                         Jan 2026 – Present
+  Machine Learning Engineer                                                                                            Bengaluru, India
+     – Architected Transformer-based OCR pipelines using SVRT (a Swin-V2-based regression transformer) for
+        government utility automation; improved exact-match accuracy from 82.74% to 97.04%.
+      – Designed a custom FocalCTCLoss combining focal loss with CTC decoding to handle severe character-class
+        imbalance; stabilized training and reduced run-to-run variance.
+      – Deployed via INT8 ONNX on AWS Lambda + FastAPI behind a Docker-based serving stack; reduced inference cost
+        30% at 99.9% uptime; owned the full lifecycle from labeling spec to production monitoring.
+
+  SpaceDrift                                                                                                    Aug 2024 – Dec 2025
+  Founder | MSME-registered sole proprietorship                                                                        Bengaluru, India
+     – Founded and operated an MSME-registered sole proprietorship delivering engineering project builds, professional
+        data annotation services, and research support to PhD scholars on problem framing, dataset curation, and
+        experimental pipelines.
+      – Spanned NLP, Computer Vision, and RAG domains as a self-funded operator; shipped ECHOME (agentic AI) and
+        FinSentinelAI (privacy-first RAG) as flagship demonstrations.
+      – Engaged 3 paid contractors on a per-project basis when workload exceeded solo capacity; owned customer scoping,
+        pricing, delivery, and stakeholder communication independently.
+
+  BrainOvision Solutions                                                                                        Feb 2024 – Apr 2024
+  Data Science Intern                                                                                                 Hyderabad, India
+     – Improved forecasting accuracy by 15% using ensemble gradient boosting with structured feature engineering;
+        presented results to senior stakeholders.
+      – Conducted EDA on multi-million-row datasets and surfaced 3 prioritized business actions adopted by the analytics
+        team.
+
+Projects
+  ECHOME — Cognitive Mirror Engine | LangGraph, CAT/IRT, Fisher Information, XTTSv2
+  github.com/Lourdhu02/echome
+
+     – Autonomous agentic AI system on LangGraph with a three-tier memory architecture (Episodic, Semantic,
+        Procedural) for long-horizon reasoning.
+      – Integrated CAT / IRT psychometric models with Fisher Information maximization for adaptive assessment; reduced
+        assessment time 70% (30 min to 9 min).
+      – Privacy-first local deployment with XTTSv2 zero-shot voice cloning.
+
+  FinSentinelAI — Privacy-First Enterprise RAG | Ollama, ChromaDB, VLMs, JWT multi-tenant
+  github.com/Lourdhu02/fin-sentinal.ai
+
+     – Production-grade RAG platform with local LLMs (Ollama), ChromaDB, hybrid retrieval, faithfulness verification,
+        and JWT-based multi-tenant session isolation.
+      – Multi-modal extraction from PDFs and bank statements using local Vision-Language Models for full data
+        sovereignty.
+      – Built for regulated finance customers with strict on-premise / data-residency constraints.
+
+  Transformers-OCR — Industrial OCR | SVTR, FocalCTCLoss, FRM, ONNX INT8
+  github.com/Lourdhu02/transformers-ocr
+
+     – High-accuracy OCR achieving 97% exact-match on numeric meter datasets via an SVTR backbone, custom
+        Feature Rearrangement Modules, and FocalCTCLoss.
+      – ONNX INT8 quantization for edge deployment with custom Semantic Guidance Modules for robustness in
+        motion-blur and low-contrast environments.
+
+Achievements & Certifications
+• Kaggle Expert (Notebooks tier) — active contributor on deep learning competitions.
+
+• Machine Learning Specialization — DeepLearning.AI / Stanford.
+
+• NPTEL — Data Science using Python (IIT Madras).
+
+• Microsoft Power BI Data Analyst Professional Certification.
+
+Education
+  Andhra Loyola Institute of Engineering and Technology                                                                       May 2024
+  Bachelor of Technology in Computer Science and Engineering                                                         Vijayawada, India
+

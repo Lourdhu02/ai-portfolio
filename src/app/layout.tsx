@@ -1,19 +1,16 @@
 import type { Metadata } from 'next'
-import { Providers } from '@/components/providers/Providers'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'AI-Native Portfolio',
-  description: 'Full-Stack Engineer · AI Systems Architect · Creative Technologist',
+  title: 'Lourdu Raju — Machine Learning Engineer',
+  description: 'ML Engineer specializing in GenAI, Computer Vision, and Production ML systems. Building intelligent systems at scale.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className="antialiased">
-        <Providers>
-          {children}
-        </Providers>
+        {children}
       </body>
     </html>
   )
