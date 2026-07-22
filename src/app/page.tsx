@@ -1,146 +1,126 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { motion } from 'motion/react'
-import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import SplitType from 'split-type'
 import { projectList } from '@/data/projects'
-import {
-  cardVariants,
-  hoverGlow,
-  hoverLift,
-  pressTap,
-  sectionVariants,
-  staggerContainer,
-  textFadeVariants,
-} from '@/lib/motion'
+import { pressTap, staggerContainer, cardVariants } from '@/lib/motion'
+import { useReducedMotion } from 'motion/react'
 
 const MotionLink = motion.create(Link)
 
-const headingWords = "Building production systems that observe, reason, and respond at the intersection of GenAI, Computer Vision, and low-latency ML serving.".split(' ')
-
 const highlights = [
-  {
-    value: '2+',
-    label: 'years shipping ML systems',
-  },
-  {
-    value: '97.04%',
-    label: 'OCR exact-match accuracy',
-  },
-  {
-    value: '70%',
-    label: 'adaptive assessment time reduction',
-  },
+  { value: '2+', label: 'years shipping ML systems' },
+  { value: '97.04%', label: 'OCR exact-match accuracy' },
+  { value: '70%', label: 'adaptive assessment time reduction' },
 ]
 
 export default function Landing() {
-  const [reveal, setReveal] = useState(false)
-  const pathname = usePathname()
+  const reduceMotion = useReducedMotion() ?? false
+  const heroRef = useRef<HTMLDivElement>(null)
+  const eyebrowRef = useRef<HTMLParagraphElement>(null)
+  const nameRef = useRef<HTMLHeadingElement>(null)
+  const thesisRef = useRef<HTMLParagraphElement>(null)
+  const linksRef = useRef<HTMLDivElement>(null)
+  const scrollHintRef = useRef<HTMLDivElement>(null)
+  const workSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setReveal(true), 300)
-    return () => clearTimeout(timer)
-  }, [pathname])
+    gsap.registerPlugin(ScrollTrigger)
 
-  const wordAnims = reveal
-    ? headingWords.map(() => ({
-        x: Math.round((Math.random() - 0.5) * 500 * 10) / 10,
-        y: Math.round((Math.random() - 0.5) * 500 * 10) / 10,
-      }))
-    : []
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia()
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+
+        tl.fromTo(eyebrowRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.1)
+          .fromTo(nameRef.current, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power3.inOut' }, 0.35)
+
+        if (thesisRef.current) {
+          const split = new SplitType(thesisRef.current, { types: 'words' })
+          tl.fromTo(split.words, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power2.out' }, 0.85)
+        }
+
+        tl.fromTo(linksRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.4)
+          .fromTo(scrollHintRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.6)
+      })
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set([eyebrowRef.current, nameRef.current, thesisRef.current, linksRef.current, scrollHintRef.current], { opacity: 1 })
+        if (nameRef.current) gsap.set(nameRef.current, { clipPath: 'inset(0 0% 0 0)' })
+      })
+
+      // Work section scroll reveals
+      const workBlocks = workSectionRef.current?.querySelectorAll('[data-work-block]')
+      if (workBlocks?.length) {
+        workBlocks.forEach((block) => {
+          const rule = block.querySelector('[data-work-rule]')
+          const content = block.querySelector('[data-work-content]')
+          if (!rule || !content) return
+
+          ScrollTrigger.create({
+            trigger: block as HTMLElement,
+            start: 'top 85%',
+            onEnter: () => {
+              gsap.fromTo(rule, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'power3.inOut' })
+              gsap.fromTo(content, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.2 })
+            },
+            once: true,
+          })
+        })
+      }
+    }, heroRef)
+
+    return () => ctx.revert()
+  }, [reduceMotion])
 
   return (
-    <div className="bg-bg">
-      <section className="w-full px-8 md:px-16 lg:px-24 pt-32 md:pt-40 pb-24 md:pb-32">
+    <div className="bg-bg" ref={heroRef}>
+      {/* Hero */}
+      <section className="w-full px-8 md:px-16 lg:px-24 pt-40 md:pt-48 pb-24 md:pb-32">
         <div className="max-w-[90%]">
-          {reveal ? (
-            <>
-              <motion.p
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4"
-              >
-                Machine Learning Engineer
-              </motion.p>
-              <motion.h1 className="font-display text-[232px] font-semibold tracking-tighter leading-[0.85] text-text">
-                {headingWords.map((word, i) => (
-                  <motion.span
-                    key={i}
-                    initial={{ x: wordAnims[i].x, y: wordAnims[i].y, opacity: 0 }}
-                    animate={{ x: 0, y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 2 + i * 0.3 }}
-                    className="inline-block"
-                  >
-                    {word}{i < headingWords.length - 1 ? '\u00A0' : ''}
-                  </motion.span>
-                ))}
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.6 }}
-                className="mt-6 text-lg text-text-secondary leading-relaxed max-w-xl"
-              >
-                ML Engineer currently architecting Transformer-based OCR pipelines at Sujanix.
-                Previously founded SpaceDrift. Kaggle Expert.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
-                className="flex flex-wrap items-center gap-4 mt-8"
-              >
-                <MotionLink
-                  href="/work"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.985 }}
-                  className="inline-flex items-center justify-center rounded-none px-5 py-2.5 bg-accent text-white text-sm font-medium"
-                >
-                  View work
-                </MotionLink>
-                <MotionLink
-                  href="/about"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.985 }}
-                  className="inline-flex items-center justify-center rounded-none px-2 py-2.5 text-sm font-medium text-text-secondary hover:text-text"
-                >
-                  About →
-                </MotionLink>
-              </motion.div>
-            </>
-          ) : (
-            <>
-              <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
-                Machine Learning Engineer
-              </p>
-              <h1 className="font-display text-[232px] font-semibold tracking-tighter leading-[0.85] text-text">
-                {headingWords.join(' ')}
-              </h1>
-              <p className="mt-6 text-lg text-text-secondary leading-relaxed max-w-xl">
-                ML Engineer currently architecting Transformer-based OCR pipelines at Sujanix.
-                Previously founded SpaceDrift. Kaggle Expert.
-              </p>
-              <div className="flex flex-wrap items-center gap-4 mt-8">
-                <Link
-                  href="/work"
-                  className="inline-flex items-center justify-center rounded-none px-5 py-2.5 bg-accent text-white text-sm font-medium"
-                >
-                  View work
-                </Link>
-                <Link
-                  href="/about"
-                  className="inline-flex items-center justify-center rounded-none px-2 py-2.5 text-sm font-medium text-text-secondary hover:text-text"
-                >
-                  About →
-                </Link>
-              </div>
-            </>
-          )}
+          <p ref={eyebrowRef} className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-6">
+            Machine Learning Engineer
+          </p>
+          <h1
+            ref={nameRef}
+            className="font-sans text-hero font-black tracking-[-0.04em] leading-[0.95] text-text"
+          >
+            Lourdu Raju
+          </h1>
+          <p ref={thesisRef} className="mt-6 text-lg text-text-secondary leading-relaxed max-w-xl">
+            ML Engineer currently architecting Transformer-based OCR pipelines at Sujanix.
+            Previously founded SpaceDrift. Kaggle Expert.
+          </p>
+          <div ref={linksRef} className="flex flex-wrap items-center gap-4 mt-8">
+            <MotionLink
+              href="/work"
+              whileHover={{ y: -2 }}
+              whileTap={pressTap}
+              className="inline-flex items-center justify-center px-5 py-2.5 bg-accent text-white text-sm font-medium"
+            >
+              View work
+            </MotionLink>
+            <MotionLink
+              href="/about"
+              whileHover={{ y: -2 }}
+              whileTap={pressTap}
+              className="inline-flex items-center justify-center px-2 py-2.5 text-sm font-medium text-text-secondary hover:text-text"
+            >
+              About →
+            </MotionLink>
+          </div>
+          <div ref={scrollHintRef} className="mt-12 flex items-center gap-2">
+            <span className="w-6 h-px bg-text-tertiary" />
+            <span className="font-mono text-xs text-text-tertiary tracking-wider uppercase">Scroll</span>
+          </div>
         </div>
       </section>
 
+      {/* Highlights */}
       <section className="border-t border-border bg-bg-alt/30">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <motion.div
@@ -161,103 +141,70 @@ export default function Landing() {
               </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
 
-          <motion.div
-            className="flex items-end justify-between gap-6 mb-8"
-            variants={sectionVariants}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <div>
-              <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-3">
-                02 - Selected Work
-              </p>
-              <h2 className="font-display text-heading-1 font-semibold tracking-tight text-text">
-                Projects
-              </h2>
-            </div>
-            <MotionLink
-              href="/work"
-              whileHover={{ x: 2 }}
-              className="hidden md:inline-flex font-mono text-xs text-text-tertiary hover:text-text tracking-wider uppercase"
-            >
-              All projects
-            </MotionLink>
-          </motion.div>
+      {/* Work – full-bleed blocks */}
+      <section ref={workSectionRef} className="border-t border-border">
+        <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
+          <div className="mb-12">
+            <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-3">
+              02 — Selected Work
+            </p>
+            <h2 className="font-sans text-display font-semibold tracking-tight text-text">
+              Projects
+            </h2>
+          </div>
 
-          <motion.div
-            className="grid gap-4 lg:grid-cols-2"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.15 }}
-          >
+          <div className="flex flex-col">
             {projectList.map((project, i) => (
               <MotionLink
                 key={project.slug}
                 href={`/projects/${project.slug}`}
-                variants={cardVariants}
-                whileHover={{ ...hoverLift, ...hoverGlow }}
+                layoutId={`project-title-${project.slug}`}
+                data-work-block
                 whileTap={pressTap}
-                className="group relative overflow-hidden border border-border bg-bg p-6 md:p-7 text-left transition-colors duration-150"
+                className="group block py-8 border-t border-border first:border-t-0"
               >
                 <div className="flex items-start justify-between gap-6">
-                  <div className="flex items-start gap-5">
-                    <span className="font-mono text-xs text-text-tertiary tabular-nums w-6 shrink-0 pt-1">
+                  <div className="flex items-start gap-6 min-w-0">
+                    <span className="font-mono text-xs text-text-tertiary tabular-nums pt-1 group-hover:text-accent transition-colors duration-150 shrink-0">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <div className="max-w-xl">
-                      <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-text-tertiary">
-                        {project.year}
-                      </p>
-                      <h3 className="mt-2 font-display text-2xl md:text-3xl font-semibold tracking-tight text-text group-hover:text-accent transition-colors duration-150">
-                        {project.title}
-                      </h3>
-                      <p className="mt-2 text-sm text-text-secondary leading-relaxed">
-                        {project.subtitle}
-                      </p>
-                      <p className="mt-4 text-sm text-text-secondary leading-relaxed max-w-2xl">
-                        {project.hook}
-                      </p>
-                      <div className="flex flex-wrap gap-2 mt-5">
-                        {project.tags.slice(0, 4).map((tag) => (
-                          <span
-                            key={tag}
-                            className="font-mono text-[11px] text-text-tertiary border border-border px-2.5 py-1 bg-bg-alt/60"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                    <div>
+                      <div className="flex items-center gap-4 mb-3">
+                        <h3 className="font-sans text-title font-semibold tracking-tight text-text relative">
+                          {project.title}
+                          <span className="absolute inset-x-0 -bottom-0.5 h-px bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                        </h3>
+                        <span className="font-mono text-xs text-text-tertiary">{project.year}</span>
+                      </div>
+                      <div data-work-rule className="w-full h-px bg-border mb-4" />
+                      <div data-work-content className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="font-mono text-[11px] text-text-tertiary border border-border px-2.5 py-1 bg-bg-alt/60"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        <p className="text-sm text-text-secondary leading-relaxed sm:text-right max-w-md">
+                          {project.subtitle}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <span className="font-mono text-xs text-accent opacity-0 group-hover:opacity-100 transition-opacity duration-150 shrink-0 pt-1">
-                    Open case study
-                  </span>
                 </div>
               </MotionLink>
             ))}
-          </motion.div>
-
-          <motion.div
-            className="mt-8 md:hidden"
-            variants={sectionVariants}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            <MotionLink
-              href="/work"
-              whileHover={{ x: 2 }}
-              className="font-mono text-xs text-text-tertiary hover:text-text tracking-wider uppercase"
-            >
-              All projects
-            </MotionLink>
-          </motion.div>
+          </div>
         </div>
       </section>
 
+      {/* About */}
       <section className="border-t border-border">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <motion.div
@@ -269,7 +216,7 @@ export default function Landing() {
           >
             <motion.div variants={cardVariants} className="border border-border bg-bg p-6 md:p-8">
               <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
-                03 - About
+                03 — About
               </p>
               <p className="text-text-secondary leading-relaxed text-lg max-w-2xl">
                 Machine Learning Engineer with production experience across GenAI, NLP, and
@@ -279,17 +226,17 @@ export default function Landing() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <MotionLink
                   href="/about"
-                  whileHover={{ x: 2 }}
-                  whileTap={{ scale: 0.985 }}
-                  className="inline-flex items-center justify-center rounded-none px-4 py-2 border border-border text-sm text-text hover:border-accent hover:text-accent"
+                  whileHover={{ y: -2 }}
+                  whileTap={pressTap}
+                  className="inline-flex items-center justify-center px-4 py-2 border border-border text-sm text-text hover:border-accent hover:text-accent"
                 >
                   Read more
                 </MotionLink>
                 <MotionLink
                   href="/contact"
-                  whileHover={{ x: 2 }}
-                  whileTap={{ scale: 0.985 }}
-                  className="inline-flex items-center justify-center rounded-none px-4 py-2 bg-accent text-white text-sm"
+                  whileHover={{ y: -2 }}
+                  whileTap={pressTap}
+                  className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white text-sm"
                 >
                   Get in touch
                 </MotionLink>

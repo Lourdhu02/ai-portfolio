@@ -107,6 +107,7 @@ export default function Contact() {
                     whileHover={{ x: 2 }}
                     whileTap={{ scale: 0.985 }}
                     className="border border-border bg-bg-alt/50 p-4 inline-flex items-center justify-between gap-3 text-sm text-text-secondary hover:text-text"
+                    aria-label={`${social.label} (opens in a new tab)`}
                   >
                     <span>{social.label}</span>
                     <ExternalLink className="w-4 h-4" strokeWidth={1.5} />

@@ -1,8 +1,12 @@
 'use client'
 
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { motion } from 'motion/react'
-import { pageVariants, cardVariants, staggerContainer, hoverLift, hoverGlow, pressTap } from '@/lib/motion'
+import { motion, AnimatePresence } from 'motion/react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { pageVariants, cardVariants, staggerContainer, pressTap } from '@/lib/motion'
+import { useReducedMotion } from 'motion/react'
 
 const experience = [
   {
@@ -11,7 +15,7 @@ const experience = [
     company: 'Sujanix Private Limited',
     location: 'Bengaluru, India',
     highlights: [
-      'Architected Transformer-based OCR using SVRT for government utility automation; improved exact-match accuracy from 82.74% to 97.04%',
+      'Architected Transformer-based OCR using SVTR for government utility automation; improved exact-match accuracy from 82.74% to 97.04%',
       'Designed a custom FocalCTCLoss combining focal loss with CTC decoding to handle severe character-class imbalance',
       'Added Semantic Guidance Modules for robustness in motion-blur and low-contrast environments',
       'Deployed via INT8 ONNX on AWS Lambda + FastAPI behind a Docker-based serving stack; reduced inference cost 30% at 99.9% uptime',
@@ -23,10 +27,10 @@ const experience = [
     company: 'SpaceDrift (MSME-registered)',
     location: 'Bengaluru, India',
     highlights: [
-      'Founded and operated an MSME-registered sole proprietorship delivering engineering project builds, professional data annotation services, and research support',
+      'Founded and operated an MSME-registered sole proprietorship delivering engineering project builds, data annotation services, and research support',
       'Shipped ECHOME and FinSentinelAI as flagship demonstrations across NLP, Computer Vision, and RAG',
       'Integrated CAT / IRT psychometric models with Fisher Information maximization for adaptive assessment; reduced assessment time 70%',
-      'Engaged 3 paid contractors on a per-project basis and owned customer scoping, pricing, delivery, and communication independently',
+      'Engaged 3 paid contractors per-project; owned customer scoping, pricing, delivery, and communication independently',
     ],
   },
   {
@@ -43,39 +47,150 @@ const experience = [
 
 const skillCategories = [
   {
-    name: 'Languages and CS',
+    name: 'Languages & CS',
     skills: ['Python', 'SQL', 'C++', 'Bash', 'Data Structures & Algorithms', 'ML System Design', 'OOP', 'Operating Systems', 'Computer Networks', 'DBMS'],
   },
   {
-    name: 'ML / Deep Learning',
+    name: 'ML & Deep Learning',
     skills: ['PyTorch', 'TensorFlow', 'Hugging Face Transformers', 'scikit-learn', 'NumPy', 'Pandas', 'OpenCV', 'XGBoost'],
   },
   {
-    name: 'GenAI and LLM',
+    name: 'GenAI & LLM',
     skills: ['LangChain', 'LangGraph', 'LlamaIndex', 'Ollama', 'vLLM', 'OpenAI / Anthropic / Groq APIs', 'LoRA Fine-tuning', 'Prompt Engineering', 'Function Calling', 'Agentic Systems'],
   },
   {
-    name: 'RAG and Vector Search',
+    name: 'RAG & Vector Search',
     skills: ['Hybrid Retrieval', 'Dense Embeddings', 'Reranking', 'Semantic Search', 'ChromaDB', 'Qdrant', 'Pinecone', 'FAISS', 'sentence-transformers'],
   },
   {
-    name: 'Computer Vision and NLP',
-    skills: ['ViT', 'YOLO', 'CLIP', 'OCR (CRNN, SVRT, SVTR, PaddleOCR)', 'BERT', 'RoBERTa', 'T5', 'spaCy', 'NLTK'],
+    name: 'Computer Vision & NLP',
+    skills: ['ViT', 'YOLO', 'CLIP', 'OCR (CRNN, SVTR, PaddleOCR)', 'BERT', 'RoBERTa', 'T5', 'spaCy', 'NLTK'],
   },
   {
-    name: 'MLOps and Cloud',
+    name: 'MLOps & Cloud',
     skills: ['ONNX', 'TensorRT', 'INT8 Quantization', 'FastAPI', 'REST / gRPC', 'Docker', 'Kubernetes', 'MLflow', 'W&B', 'AWS (EC2, Lambda, S3, SageMaker)', 'GCP (Vertex AI)', 'PostgreSQL', 'MongoDB', 'Redis', 'GitHub Actions', 'CI/CD'],
   },
 ]
 
 const certifications = [
-  'Kaggle Expert (Notebooks tier) - active contributor on deep learning competitions',
-  'Machine Learning Specialization - DeepLearning.AI / Stanford',
-  'NPTEL - Data Science using Python (IIT Madras)',
+  'Kaggle Expert (Notebooks tier) — active contributor on deep learning competitions',
+  'Machine Learning Specialization — DeepLearning.AI / Stanford',
+  'NPTEL — Data Science using Python (IIT Madras)',
   'Microsoft Power BI Data Analyst Professional Certification',
 ]
 
+function SkillAccordion() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const reduceMotion = useReducedMotion() ?? false
+
+  return (
+    <div className="flex flex-col">
+      {skillCategories.map((cat, i) => {
+        const isOpen = openIndex === i
+        return (
+          <div key={cat.name} className="border-t border-border first:border-t-0">
+            <button
+              onClick={() => setOpenIndex(isOpen ? null : i)}
+              className="w-full flex items-center justify-between py-5 px-0 text-left group"
+            >
+              <div className="flex items-center gap-6">
+                <span className={`font-mono text-xs tabular-nums transition-colors duration-150 ${isOpen ? 'text-accent' : 'text-text-tertiary'}`}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="font-sans text-title font-semibold tracking-tight text-text">
+                  {cat.name}
+                </span>
+              </div>
+              <motion.span
+                animate={{ rotate: isOpen ? 45 : 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="font-mono text-sm text-text-tertiary"
+              >
+                +
+              </motion.span>
+            </button>
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="overflow-hidden"
+                >
+                  <div className="pb-6 pl-0 flex flex-wrap gap-2">
+                    {cat.skills.map((skill, si) => (
+                      <motion.span
+                        key={skill}
+                        initial={reduceMotion ? false : { y: 8, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.3, delay: reduceMotion ? 0 : si * 0.04, ease: [0.22, 1, 0.36, 1] }}
+                        className="font-mono text-[11px] text-text-secondary border border-border px-2.5 py-1 bg-bg-alt/60"
+                      >
+                        {skill}
+                      </motion.span>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function About() {
+  const reduceMotion = useReducedMotion() ?? false
+  const timelineRef = useRef<HTMLDivElement>(null)
+  const lineRef = useRef<SVGPathElement>(null)
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger)
+
+    const ctx = gsap.context(() => {
+      // SVG line scrub
+      if (lineRef.current && !reduceMotion) {
+        ScrollTrigger.create({
+          trigger: timelineRef.current,
+          start: 'top center',
+          end: 'bottom center',
+          scrub: 1,
+          onUpdate: (self) => {
+            const progress = self.progress
+            const totalLength = lineRef.current!.getTotalLength()
+            gsap.set(lineRef.current, { strokeDashoffset: totalLength * (1 - progress) })
+          },
+        })
+      }
+
+      // Role pin + reveal
+      const roles = timelineRef.current?.querySelectorAll('[data-role-entry]')
+      if (roles?.length && !reduceMotion) {
+        roles.forEach((role) => {
+          const title = role.querySelector('[data-role-title]')
+          const date = role.querySelector('[data-role-date]')
+          const bullets = role.querySelectorAll('[data-role-bullet]')
+
+          ScrollTrigger.create({
+            trigger: role as HTMLElement,
+            start: 'top 40%',
+            end: 'bottom 40%',
+            onEnter: () => {
+              gsap.fromTo(title, { clipPath: 'inset(0 0 100% 0)', y: 12, opacity: 0 }, { clipPath: 'inset(0 0 0% 0)', y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' })
+              gsap.fromTo(date, { opacity: 0 }, { opacity: 1, duration: 0.3 })
+              gsap.fromTo(bullets, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.08, ease: 'power2.out' })
+            },
+            once: true,
+          })
+        })
+      }
+    }, timelineRef)
+
+    return () => ctx.revert()
+  }, [reduceMotion])
+
   return (
     <div className="bg-bg">
       <motion.section
@@ -86,9 +201,9 @@ export default function About() {
       >
         <div className="max-w-4xl">
           <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
-            01 - Background
+            01 — Background
           </p>
-          <h1 className="font-display text-heading-1 font-semibold tracking-tight text-text mb-4">
+          <h1 className="font-sans text-display font-semibold tracking-tight text-text mb-4">
             About
           </h1>
           <p className="text-text-secondary leading-relaxed max-w-2xl text-lg">
@@ -98,6 +213,7 @@ export default function About() {
         </div>
       </motion.section>
 
+      {/* Snapshot */}
       <section className="border-t border-border bg-bg-alt/30">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <motion.div
@@ -126,17 +242,13 @@ export default function About() {
 
             <motion.div variants={cardVariants} className="grid gap-4">
               <div className="border border-border bg-bg p-6">
-                <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-2">
-                  Focus
-                </p>
+                <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-2">Focus</p>
                 <p className="text-sm text-text-secondary leading-relaxed">
                   Agentic AI, OCR, RAG, low-latency serving, and practical ML systems.
                 </p>
               </div>
               <div className="border border-border bg-bg p-6">
-                <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-2">
-                  Style
-                </p>
+                <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-2">Style</p>
                 <p className="text-sm text-text-secondary leading-relaxed">
                   Clear interfaces, compact layouts, and motion that helps orientation instead of
                   calling attention to itself.
@@ -147,86 +259,74 @@ export default function About() {
         </div>
       </section>
 
-      <section className="border-t border-border">
+      {/* Experience Timeline */}
+      <section ref={timelineRef} className="border-t border-border">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-6">
-            02 - Experience
+            02 — Experience
           </p>
-          <motion.div
-            className="grid gap-4"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.15 }}
-          >
-            {experience.map((exp) => (
-              <motion.article
-                key={exp.period + exp.role}
-                variants={cardVariants}
-                whileHover={{ ...hoverLift, ...hoverGlow }}
-                className="border border-border bg-bg p-6 md:p-7"
-              >
-                <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <p className="font-mono text-xs text-text-tertiary">{exp.period}</p>
-                    <h2 className="mt-2 font-display text-2xl md:text-3xl font-semibold tracking-tight text-text">
+
+          <div className="relative pl-8 md:pl-10">
+            {/* SVG line */}
+            <svg
+              className="absolute left-0 top-0 h-full w-px"
+              viewBox="0 0 1 100%"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path
+                ref={lineRef}
+                d="M 0.5 0 L 0.5 100%"
+                stroke="#E5E5E5"
+                strokeWidth={1}
+                fill="none"
+                strokeDasharray="1000"
+                strokeDashoffset="1000"
+              />
+            </svg>
+
+            <div className="flex flex-col gap-16">
+              {experience.map((exp) => (
+                <div key={exp.period} data-role-entry className="relative">
+                  {/* Timeline dot */}
+                  <div className="absolute -left-8 md:-left-10 top-0 w-4 h-4 rounded-full border-2 border-accent bg-bg" />
+
+                  <div className="pl-4 md:pl-6">
+                    <p data-role-date className="font-mono text-xs text-accent mb-2">
+                      {exp.period}
+                    </p>
+                    <h2 data-role-title className="font-sans text-title font-semibold tracking-tight text-text mb-1">
                       {exp.role}
                     </h2>
-                    <p className="text-sm text-text-secondary mt-1">
-                      {exp.company} - {exp.location}
+                    <p className="font-mono text-xs text-text-tertiary mb-4">
+                      {exp.company} — {exp.location}
                     </p>
+                    <div className="flex flex-col gap-2">
+                      {exp.highlights.map((h) => (
+                        <p key={h} data-role-bullet className="text-sm text-text-secondary leading-relaxed pl-4 border-l border-border">
+                          {h}
+                        </p>
+                      ))}
+                    </div>
                   </div>
                 </div>
-                <div className="mt-5 grid gap-3 md:grid-cols-2">
-                  {exp.highlights.map((highlight) => (
-                    <div key={highlight} className="border border-border bg-bg-alt/50 p-4">
-                      <p className="text-sm text-text-secondary leading-relaxed">{highlight}</p>
-                    </div>
-                  ))}
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* Skills Accordion */}
       <section className="border-t border-border bg-bg-alt/30">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-6">
-            03 - Capabilities
+            03 — Capabilities
           </p>
-          <motion.div
-            className="grid gap-4 lg:grid-cols-2"
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, amount: 0.12 }}
-          >
-            {skillCategories.map((cat) => (
-              <motion.div
-                key={cat.name}
-                variants={cardVariants}
-                className="border border-border bg-bg p-6"
-              >
-                <p className="font-display text-lg font-semibold tracking-tight text-text">
-                  {cat.name}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {cat.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="font-mono text-[11px] text-text-secondary border border-border px-2.5 py-1 bg-bg-alt/60"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+          <SkillAccordion />
         </div>
       </section>
 
+      {/* Education & Certifications */}
       <section className="border-t border-border">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <motion.div
@@ -238,11 +338,11 @@ export default function About() {
           >
             <motion.div variants={cardVariants} className="border border-border bg-bg p-6">
               <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
-                04 - Education
+                04 — Education
               </p>
               <p className="font-medium text-text">B.Tech in Computer Science and Engineering</p>
               <p className="text-sm text-text-secondary mt-2">
-                Andhra Loyola Institute of Engineering and Technology - Vijayawada
+                Andhra Loyola Institute of Engineering and Technology — Vijayawada
               </p>
             </motion.div>
 
@@ -268,7 +368,7 @@ export default function About() {
             viewport={{ once: true, amount: 0.2 }}
           >
             <div>
-              <p className="font-display text-lg font-semibold tracking-tight text-text">
+              <p className="font-sans text-lg font-semibold tracking-tight text-text">
                 Open to the right kind of work
               </p>
               <p className="text-sm text-text-secondary mt-1">
@@ -278,7 +378,7 @@ export default function About() {
             </div>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-none px-4 py-2 bg-text text-bg-dark text-sm font-medium"
+              className="inline-flex items-center justify-center px-4 py-2 bg-text text-bg-dark text-sm font-medium"
             >
               Start a conversation
             </Link>

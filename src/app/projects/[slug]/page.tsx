@@ -170,6 +170,7 @@ export default function ProjectPage() {
               whileHover={{ x: 2 }}
               whileTap={pressTap}
               className="font-mono text-xs text-accent hover:opacity-80 tracking-wider uppercase transition-opacity duration-150"
+              aria-label={`View on GitHub (opens in a new tab)`}
             >
               View on GitHub
             </MotionLink>

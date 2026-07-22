@@ -247,12 +247,18 @@ export function Navigation() {
                 event.preventDefault()
                 handleNav('/')
               }}
-              whileHover={{ y: -1, opacity: 0.8 }}
+              whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
-              className="font-display text-lg font-semibold tracking-tight text-text"
+              className="font-sans text-lg font-semibold tracking-tight text-text relative"
               aria-label="Home"
             >
               LR
+              <motion.span
+                className="absolute inset-x-0 -bottom-0.5 h-px bg-current origin-left"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+              />
             </MotionLink>
 
             <button
@@ -342,6 +348,7 @@ export function Navigation() {
                         href={item.href}
                         data-menu-focusable
                         data-nav-link
+                        aria-current={isActive ? 'page' : undefined}
                         variants={linkItemVariants}
                         whileHover={{ x: 5 }}
                         whileTap={{ scale: 0.99 }}
@@ -355,7 +362,7 @@ export function Navigation() {
                           {String(index + 1).padStart(2, '0')}
                         </span>
                         <span
-                          className={`font-display text-4xl md:text-5xl tracking-tight leading-none ${
+                          className={`font-sans text-4xl md:text-5xl tracking-tight leading-none ${
                             isActive ? 'text-accent' : 'text-white'
                           }`}
                         >
@@ -379,27 +386,60 @@ export function Navigation() {
                       target="_blank"
                       rel="noopener noreferrer"
                       data-menu-focusable
-                      className="text-sm text-white/70 hover:text-white transition-colors duration-150 inline-flex items-center gap-1.5"
+                      className="text-sm text-white/70 hover:text-white inline-flex items-center gap-1.5 group"
                     >
-                      LinkedIn →
+                      <span className="relative">
+                        LinkedIn
+                        <span className="absolute inset-x-0 -bottom-0.5 h-px bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                      </span>
+                      <span className="sr-only">(opens in a new tab)</span>
+                      <motion.span
+                        className="inline-block"
+                        whileHover={{ x: 4 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      >
+                        →
+                      </motion.span>
                     </a>
                     <a
                       href="https://github.com/Lourdhu02"
                       target="_blank"
                       rel="noopener noreferrer"
                       data-menu-focusable
-                      className="text-sm text-white/70 hover:text-white transition-colors duration-150 inline-flex items-center gap-1.5"
+                      className="text-sm text-white/70 hover:text-white inline-flex items-center gap-1.5 group"
                     >
-                      GitHub →
+                      <span className="relative">
+                        GitHub
+                        <span className="absolute inset-x-0 -bottom-0.5 h-px bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                      </span>
+                      <span className="sr-only">(opens in a new tab)</span>
+                      <motion.span
+                        className="inline-block"
+                        whileHover={{ x: 4 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      >
+                        →
+                      </motion.span>
                     </a>
                     <a
                       href="https://kaggle.com/blourdhuraju"
                       target="_blank"
                       rel="noopener noreferrer"
                       data-menu-focusable
-                      className="text-sm text-white/70 hover:text-white transition-colors duration-150 inline-flex items-center gap-1.5"
+                      className="text-sm text-white/70 hover:text-white inline-flex items-center gap-1.5 group"
                     >
-                      Kaggle →
+                      <span className="relative">
+                        Kaggle
+                        <span className="absolute inset-x-0 -bottom-0.5 h-px bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                      </span>
+                      <span className="sr-only">(opens in a new tab)</span>
+                      <motion.span
+                        className="inline-block"
+                        whileHover={{ x: 4 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                      >
+                        →
+                      </motion.span>
                     </a>
                   </div>
 

@@ -46,7 +46,7 @@ export const projects: Record<ProjectSlug, Project> = {
       {
         heading: 'Approach',
         content:
-          'Built a Transformer-based OCR pipeline using SVRT (a Swin-V2-based regression transformer) as the backbone. The system processes meter images through a custom Feature Rearrangement Module (FRM) that restructures spatial features from the CNN backbone into a sequence suitable for Transformer encoding — bridging convolutional feature extraction with sequence modeling.',
+          'Built a Transformer-based OCR pipeline using SVTR (a Swin-V2-based regression transformer) as the backbone. The system processes meter images through a custom Feature Rearrangement Module (FRM) that restructures spatial features from the CNN backbone into a sequence suitable for Transformer encoding — bridging convolutional feature extraction with sequence modeling.',
       },
       {
         heading: 'Custom Loss Function',
@@ -64,7 +64,7 @@ export const projects: Record<ProjectSlug, Project> = {
           'Deployed via INT8 ONNX quantization on AWS Lambda + FastAPI behind a Docker-based serving stack. Quantization reduced model size by 4x and inference latency by 30% while retaining 97% accuracy. Achieved 99.9% uptime in production. Owned the full lifecycle from labeling specification and data annotation guidelines to production monitoring and alerting.',
       },
     ],
-    github: 'https://github.com/Lourdhu02/transformers-ocr',
+    github: 'https://github.com/Lourdhu02',
     year: '2026',
   },
 
