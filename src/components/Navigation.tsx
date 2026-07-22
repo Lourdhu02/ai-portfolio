@@ -95,7 +95,7 @@ export function Navigation() {
         gsap.fromTo(
           panel,
           { y: 18, opacity: 0, scale: 0.985 },
-          { y: 0, opacity: 1, scale: 1, duration: reduceMotion ? 0 : 0.45, ease: 'power3.out' }
+          { y: 0, opacity: 1, scale: 1, duration: reduceMotion ? 0 : 0.35, ease: 'power3.out' }
         )
       }
 
@@ -103,7 +103,7 @@ export function Navigation() {
         gsap.fromTo(
           glow,
           { opacity: 0, scale: 0.85, x: -24, y: -18 },
-          { opacity: 1, scale: 1, x: 0, y: 0, duration: reduceMotion ? 0 : 0.5, ease: 'power2.out' }
+          { opacity: 1, scale: 1, x: 0, y: 0, duration: reduceMotion ? 0 : 0.35, ease: 'power2.out' }
         )
 
         if (!reduceMotion) {
@@ -158,7 +158,7 @@ export function Navigation() {
     animate: {
       opacity: 1,
       x: 0,
-      transition: { duration: reduceMotion ? 0 : 0.24, ease: pageEase },
+      transition: { duration: reduceMotion ? 0 : 0.3, ease: pageEase },
     },
   }
 
@@ -167,16 +167,16 @@ export function Navigation() {
     animate: {
       opacity: 1,
       transition: {
-        duration: reduceMotion ? 0 : 0.18,
+        duration: reduceMotion ? 0 : 0.35,
         ease: pageEase,
         when: 'beforeChildren',
         staggerChildren: reduceMotion ? 0 : 0.05,
-        delayChildren: reduceMotion ? 0 : 0.04,
+        delayChildren: reduceMotion ? 0 : 0.05,
       },
     },
     exit: {
       opacity: 0,
-      transition: { duration: reduceMotion ? 0 : 0.18, ease: pageEase },
+      transition: { duration: reduceMotion ? 0 : 0.35, ease: pageEase },
     },
   }
 
@@ -210,7 +210,7 @@ export function Navigation() {
         transition={{ duration: reduceMotion ? 0 : 0.35, ease: pageEase }}
         aria-label="Main navigation"
       >
-          <div className="mx-4 mt-3 sm:mx-6 md:mx-10 lg:mx-16 h-16 rounded-[28px] border border-white/15 bg-white/[0.06] shadow-[0_14px_36px_rgba(10,10,14,0.06)] backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto relative overflow-hidden">
+          <div className="mx-4 mt-3 sm:mx-6 md:mx-10 lg:mx-16 h-16 border border-white/15 bg-white/[0.06] shadow-[0_14px_36px_rgba(10,10,14,0.06)] backdrop-blur-2xl backdrop-saturate-150 pointer-events-auto relative overflow-hidden">
             <svg className="absolute w-0 h-0" aria-hidden="true">
               <defs>
                 <filter id="lg-distortion">
@@ -249,7 +249,7 @@ export function Navigation() {
               }}
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
-              className="font-sans text-lg font-semibold tracking-tight text-text relative"
+              className="font-unica text-lg font-semibold tracking-tight text-text relative"
               aria-label="Home"
             >
               LR
@@ -269,33 +269,36 @@ export function Navigation() {
               aria-expanded={menuOpen}
               aria-controls="navigation-menu"
             >
-              <motion.span
-                className="absolute inset-0 rounded-[18px] bg-white/20"
+                <motion.span
+                  className="absolute inset-0 rounded-[18px] bg-white/20"
                 initial={false}
                 animate={menuOpen ? 'open' : 'closed'}
                 variants={pillVariants}
               />
               <span className="relative flex h-4 w-4 flex-col items-stretch justify-center gap-1.5">
                 <motion.span
-                  className="h-[1.5px] w-full rounded-full bg-current origin-center"
+                  className="h-[1.5px] w-full bg-current"
+                  style={{ originX: '50%', originY: '50%' }}
                   initial={false}
                   animate={menuOpen ? 'open' : 'closed'}
                   variants={lineTop}
-                  transition={{ duration: reduceMotion ? 0 : 0.22, ease: pageEase }}
+                  transition={{ duration: reduceMotion ? 0 : 0.3, ease: pageEase }}
                 />
                 <motion.span
-                  className="h-[1.5px] w-full rounded-full bg-current origin-center"
+                  className="h-[1.5px] w-full bg-current"
+                  style={{ originX: '50%', originY: '50%' }}
                   initial={false}
                   animate={menuOpen ? 'open' : 'closed'}
                   variants={lineMiddle}
-                  transition={{ duration: reduceMotion ? 0 : 0.18, ease: pageEase }}
+                  transition={{ duration: reduceMotion ? 0 : 0.3, ease: pageEase }}
                 />
                 <motion.span
-                  className="h-[1.5px] w-full rounded-full bg-current origin-center"
+                  className="h-[1.5px] w-full bg-current"
+                  style={{ originX: '50%', originY: '50%' }}
                   initial={false}
                   animate={menuOpen ? 'open' : 'closed'}
                   variants={lineBottom}
-                  transition={{ duration: reduceMotion ? 0 : 0.22, ease: pageEase }}
+                  transition={{ duration: reduceMotion ? 0 : 0.3, ease: pageEase }}
                 />
               </span>
             </button>
@@ -362,7 +365,7 @@ export function Navigation() {
                           {String(index + 1).padStart(2, '0')}
                         </span>
                         <span
-                          className={`font-sans text-4xl md:text-5xl tracking-tight leading-none ${
+                          className={`font-unica text-4xl md:text-5xl tracking-tight leading-none ${
                             isActive ? 'text-accent' : 'text-white'
                           }`}
                         >
@@ -453,7 +456,7 @@ export function Navigation() {
 
                   <div className="flex items-center gap-2 text-white/50">
                     <svg width="6" height="6" viewBox="0 0 6 6" className="status-dot-svg">
-                      <circle cx="3" cy="3" r="3" fill="#22c55e" />
+                      <circle cx="3" cy="3" r="3" fill="#FF3B30" />
                     </svg>
                     <span className="font-mono text-xs">Open to opportunities</span>
                   </div>
