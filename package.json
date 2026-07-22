@@ -7,7 +7,9 @@
     "build": "next build --turbo",
     "start": "next start",
     "lint": "eslint src",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -23,12 +25,18 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^16.2.10",
     "@tailwindcss/postcss": "^4.0.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.0.4",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.2.10",
+    "jsdom": "^29.1.1",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.8.0"
+    "typescript": "^5.8.0",
+    "vitest": "^4.1.10"
   }
 }
