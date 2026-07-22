@@ -1,11 +1,26 @@
 import type { Metadata } from 'next'
-import { Inter, DM_Mono } from 'next/font/google'
+import { Inter, Cinzel_Decorative, Unica_One, DM_Mono } from 'next/font/google'
 import { LayoutClient } from '@/components/layout-client'
 import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '900'],
   variable: '--font-sans',
+  display: 'swap',
+})
+
+const cinzelDecorative = Cinzel_Decorative({
+  weight: ['700'],
+  subsets: ['latin'],
+  variable: '--font-cinzel',
+  display: 'swap',
+})
+
+const unicaOne = Unica_One({
+  weight: ['400'],
+  subsets: ['latin'],
+  variable: '--font-unica',
   display: 'swap',
 })
 
@@ -44,7 +59,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${dmMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${cinzelDecorative.variable} ${unicaOne.variable} ${dmMono.variable}`}>
       <body className="antialiased">
         <LayoutClient>{children}</LayoutClient>
       </body>

@@ -9,10 +9,12 @@
   --color-text-tertiary: #999999;
   --color-border: #E5E5E5;
   --color-accent: #FF3B30;
-  --color-accent-bg: rgba(255, 59, 48, 0.06);
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+  --font-cinzel: 'Cinzel Decorative', serif;
+  --font-unica: 'Unica One', sans-serif;
+  --text-heading-1: clamp(1.75rem, 3.5vw, 2.5rem);
 
   --text-hero: clamp(3.5rem, 10vw, 8rem);
   --text-display: clamp(2rem, 5vw, 3.5rem);
@@ -29,11 +31,7 @@
   --ease-page: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-*,
-*::before,
-*::after {
-  border-radius: 0 !important;
-}
+html { border-radius: 0; }
 
 html {
   scroll-behavior: auto;
