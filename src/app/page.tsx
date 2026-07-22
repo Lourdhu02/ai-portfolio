@@ -2,13 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { motion } from 'motion/react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import SplitType from 'split-type'
+import { motion, useReducedMotion } from 'motion/react'
 import { projectList } from '@/data/projects'
-import { pressTap, staggerContainer, cardVariants } from '@/lib/motion'
-import { useReducedMotion } from 'motion/react'
+import { pressTap, staggerContainer, sectionVariants } from '@/lib/motion'
+import { loadGSAP } from '@/lib/dynamic-gsap'
 
 const MotionLink = motion.create(Link)
 
@@ -21,60 +18,50 @@ const highlights = [
 export default function Landing() {
   const reduceMotion = useReducedMotion() ?? false
   const heroRef = useRef<HTMLDivElement>(null)
-  const eyebrowRef = useRef<HTMLParagraphElement>(null)
-  const nameRef = useRef<HTMLHeadingElement>(null)
-  const thesisRef = useRef<HTMLParagraphElement>(null)
-  const linksRef = useRef<HTMLDivElement>(null)
-  const scrollHintRef = useRef<HTMLDivElement>(null)
   const workSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
+    let ctx: gsap.Context | undefined
 
-    const ctx = gsap.context(() => {
-      const mm = gsap.matchMedia()
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+    async function init() {
+      const { gsap, ScrollTrigger } = await loadGSAP()
 
-        tl.fromTo(eyebrowRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5 }, 0.1)
-          .fromTo(nameRef.current, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power3.inOut' }, 0.35)
+      ctx = gsap.context(() => {
+        // Work section scroll reveals
+        const workBlocks = workSectionRef.current?.querySelectorAll('[data-work-block]')
+        if (workBlocks?.length) {
+          workBlocks.forEach((block) => {
+            const rule = block.querySelector('[data-work-rule]')
+            const content = block.querySelector('[data-work-content]')
+            const indexEl = block.querySelector('[data-work-index]')
+            if (!rule || !content) return
 
-        if (thesisRef.current) {
-          const split = new SplitType(thesisRef.current, { types: 'words' })
-          tl.fromTo(split.words, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power2.out' }, 0.85)
-        }
-
-        tl.fromTo(linksRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4 }, 1.4)
-          .fromTo(scrollHintRef.current, { opacity: 0 }, { opacity: 1, duration: 0.3 }, 1.6)
-      })
-
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set([eyebrowRef.current, nameRef.current, thesisRef.current, linksRef.current, scrollHintRef.current], { opacity: 1 })
-        if (nameRef.current) gsap.set(nameRef.current, { clipPath: 'inset(0 0% 0 0)' })
-      })
-
-      // Work section scroll reveals
-      const workBlocks = workSectionRef.current?.querySelectorAll('[data-work-block]')
-      if (workBlocks?.length) {
-        workBlocks.forEach((block) => {
-          const rule = block.querySelector('[data-work-rule]')
-          const content = block.querySelector('[data-work-content]')
-          if (!rule || !content) return
-
-          ScrollTrigger.create({
-            trigger: block as HTMLElement,
-            start: 'top 85%',
-            onEnter: () => {
-              gsap.fromTo(rule, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'power3.inOut' })
-              gsap.fromTo(content, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.2 })
-            },
-            once: true,
+            ScrollTrigger.create({
+              trigger: block as HTMLElement,
+              start: 'top 85%',
+              onEnter: () => {
+                if (rule) gsap.fromTo(rule, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.5, ease: 'power3.inOut' })
+                if (content) gsap.fromTo(content, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.15 })
+                if (indexEl) {
+                  const target = parseInt(indexEl.getAttribute('data-target') || '0', 10)
+                  const obj = { val: 0 }
+                  gsap.to(obj, {
+                    val: target,
+                    duration: 0.5,
+                    ease: 'power2.out',
+                    onUpdate: () => { indexEl.textContent = String(Math.round(obj.val)).padStart(2, '0') },
+                  })
+                }
+              },
+              once: true,
+            })
           })
-        })
-      }
-    }, heroRef)
+        }
+      }, heroRef)
+    }
 
-    return () => ctx.revert()
+    init()
+    return () => ctx?.revert()
   }, [reduceMotion])
 
   return (
@@ -82,20 +69,18 @@ export default function Landing() {
       {/* Hero */}
       <section className="w-full px-8 md:px-16 lg:px-24 pt-40 md:pt-48 pb-24 md:pb-32">
         <div className="max-w-[90%]">
-          <p ref={eyebrowRef} className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-6">
+          <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-6">
             Machine Learning Engineer
           </p>
-          <h1
-            ref={nameRef}
-            className="font-sans text-hero font-black tracking-[-0.04em] leading-[0.95] text-text"
-          >
+          <h1 className="font-cinzel text-hero font-black tracking-[-0.04em] leading-[0.95] text-text">
             Lourdu Raju
           </h1>
-          <p ref={thesisRef} className="mt-6 text-lg text-text-secondary leading-relaxed max-w-xl">
+          <p className="mt-6 text-lg text-text-secondary leading-relaxed max-w-xl">
             ML Engineer currently architecting Transformer-based OCR pipelines at Sujanix.
             Previously founded SpaceDrift. Kaggle Expert.
           </p>
-          <div ref={linksRef} className="flex flex-wrap items-center gap-4 mt-8">
+          <div className="mt-8 w-16 h-px bg-border origin-left" />
+          <div className="flex flex-wrap items-center gap-4 mt-8">
             <MotionLink
               href="/work"
               whileHover={{ y: -2 }}
@@ -113,7 +98,7 @@ export default function Landing() {
               About →
             </MotionLink>
           </div>
-          <div ref={scrollHintRef} className="mt-12 flex items-center gap-2">
+          <div className="mt-12 flex items-center gap-2">
             <span className="w-6 h-px bg-text-tertiary" />
             <span className="font-mono text-xs text-text-tertiary tracking-wider uppercase">Scroll</span>
           </div>
@@ -124,7 +109,7 @@ export default function Landing() {
       <section className="border-t border-border bg-bg-alt/30">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10"
+            className="grid grid-cols-1 md:grid-cols-3"
             variants={staggerContainer}
             initial="initial"
             whileInView="animate"
@@ -133,8 +118,7 @@ export default function Landing() {
             {highlights.map((item) => (
               <motion.div
                 key={item.label}
-                variants={cardVariants}
-                className="border border-border bg-bg p-6"
+                variants={sectionVariants}
               >
                 <p className="font-mono text-2xl md:text-3xl text-accent tabular-nums">{item.value}</p>
                 <p className="mt-2 text-sm text-text-secondary leading-relaxed">{item.label}</p>
@@ -151,7 +135,7 @@ export default function Landing() {
             <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-3">
               02 — Selected Work
             </p>
-            <h2 className="font-sans text-display font-semibold tracking-tight text-text">
+            <h2 className="font-unica text-display font-semibold tracking-tight text-text">
               Projects
             </h2>
           </div>
@@ -168,14 +152,23 @@ export default function Landing() {
               >
                 <div className="flex items-start justify-between gap-6">
                   <div className="flex items-start gap-6 min-w-0">
-                    <span className="font-mono text-xs text-text-tertiary tabular-nums pt-1 group-hover:text-accent transition-colors duration-150 shrink-0">
+                    <span
+                      data-work-index
+                      data-target={i + 1}
+                      className="font-mono text-xs text-text-tertiary tabular-nums pt-1 group-hover:text-accent transition-colors duration-150 shrink-0"
+                    >
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
                       <div className="flex items-center gap-4 mb-3">
-                        <h3 className="font-sans text-title font-semibold tracking-tight text-text relative">
+                        <h3 className="font-unica text-title font-semibold tracking-tight text-text relative">
                           {project.title}
-                          <span className="absolute inset-x-0 -bottom-0.5 h-px bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                          <motion.span
+                            className="absolute inset-x-0 -bottom-0.5 h-px bg-accent origin-left"
+                            initial={{ scaleX: 0 }}
+                            whileHover={{ scaleX: 1 }}
+                            transition={{ duration: 0.2, ease: 'easeOut' }}
+                          />
                         </h3>
                         <span className="font-mono text-xs text-text-tertiary">{project.year}</span>
                       </div>
@@ -214,7 +207,7 @@ export default function Landing() {
             whileInView="animate"
             viewport={{ once: true, amount: 0.2 }}
           >
-            <motion.div variants={cardVariants} className="border border-border bg-bg p-6 md:p-8">
+            <motion.div>
               <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
                 03 — About
               </p>
@@ -243,8 +236,8 @@ export default function Landing() {
               </div>
             </motion.div>
 
-            <motion.div variants={cardVariants} className="grid gap-4">
-              <div className="border border-border bg-bg p-6">
+            <motion.div className="grid gap-4">
+              <div>
                 <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-2">
                   Focus
                 </p>
@@ -253,7 +246,7 @@ export default function Landing() {
                   operational boundaries.
                 </p>
               </div>
-              <div className="border border-border bg-bg p-6">
+              <div>
                 <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-2">
                   Approach
                 </p>
