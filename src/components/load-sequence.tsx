@@ -25,7 +25,7 @@ export function LoadSequence({ onComplete }: { onComplete: () => void }) {
     let completeTimer = 0
     let finished = false
     const start = performance.now()
-    const duration = 1200
+    const duration = 800
 
     const tick = (now: number) => {
       const progress = Math.min(1, (now - start) / duration)
@@ -38,8 +38,8 @@ export function LoadSequence({ onComplete }: { onComplete: () => void }) {
 
       if (finished) return
       finished = true
-      exitTimer = window.setTimeout(() => setExiting(true), 120)
-      completeTimer = window.setTimeout(() => onCompleteRef.current(), 440)
+      exitTimer = window.setTimeout(() => setExiting(true), 200)
+      completeTimer = window.setTimeout(() => onCompleteRef.current(), 500)
     }
 
     rafId = requestAnimationFrame(tick)
@@ -61,26 +61,30 @@ export function LoadSequence({ onComplete }: { onComplete: () => void }) {
         y: exiting ? -10 : 0,
       }}
       transition={{
-        duration: 0.32,
+        duration: 0.35,
         ease: pageEase,
       }}
     >
       <motion.p
         className="font-mono text-[clamp(4rem,12vw,10rem)] font-medium text-text tabular-nums leading-none"
         initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2, ease: pageEase }}
+        animate={exiting ? { opacity: 0, y: -6 } : { opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: pageEase }}
       >
         {count}%
       </motion.p>
-      <div className="mt-4 w-32 h-[2px] bg-border relative overflow-hidden">
+      <motion.div
+        className="mt-4 w-32 h-[2px] bg-border relative overflow-hidden origin-bottom"
+        initial={{ scaleY: 1 }}
+        animate={exiting ? { scaleY: 0, opacity: 0 } : { scaleY: 1, opacity: 1 }}
+        transition={{ duration: 0.25, ease: pageEase }}
+      >
         <motion.div
           className="absolute inset-0 bg-accent origin-left"
-          initial={{ scaleX: 0 }}
           animate={{ scaleX: count / 100 }}
-          transition={{ duration: 0.12, ease: pageEase }}
+          transition={{ duration: 0.1, ease: pageEase }}
         />
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
