@@ -2,12 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { motion } from 'motion/react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { motion, useReducedMotion } from 'motion/react'
 import { projectList } from '@/data/projects'
 import { pressTap } from '@/lib/motion'
-import { useReducedMotion } from 'motion/react'
+import { loadGSAP } from '@/lib/dynamic-gsap'
 
 const MotionLink = motion.create(Link)
 
@@ -16,32 +14,48 @@ export default function Work() {
   const sectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
+    let ctx: gsap.Context | undefined
 
-    const ctx = gsap.context(() => {
-      if (reduceMotion) return
+    async function init() {
+      const { gsap, ScrollTrigger } = await loadGSAP()
 
-      const blocks = sectionRef.current?.querySelectorAll('[data-work-block]')
-      if (!blocks?.length) return
+      ctx = gsap.context(() => {
+        if (reduceMotion) return
 
-      blocks.forEach((block) => {
-        const rule = block.querySelector('[data-work-rule]')
-        const content = block.querySelector('[data-work-content]')
-        if (!rule || !content) return
+        const blocks = sectionRef.current?.querySelectorAll('[data-work-block]')
+        if (!blocks?.length) return
 
-        ScrollTrigger.create({
-          trigger: block as HTMLElement,
-          start: 'top 85%',
-          onEnter: () => {
-            gsap.fromTo(rule, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'power3.inOut' })
-            gsap.fromTo(content, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' })
-          },
-          once: true,
+        blocks.forEach((block) => {
+          const rule = block.querySelector('[data-work-rule]')
+          const content = block.querySelector('[data-work-content]')
+          const indexEl = block.querySelector('[data-work-index]')
+          if (!rule || !content) return
+
+          ScrollTrigger.create({
+            trigger: block as HTMLElement,
+            start: 'top 85%',
+            onEnter: () => {
+              if (rule) gsap.fromTo(rule, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.5, ease: 'power3.inOut' })
+              if (content) gsap.fromTo(content, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out' })
+              if (indexEl) {
+                const target = parseInt(indexEl.getAttribute('data-target') || '0', 10)
+                const obj = { val: 0 }
+                gsap.to(obj, {
+                  val: target,
+                  duration: 0.5,
+                  ease: 'power2.out',
+                  onUpdate: () => { indexEl.textContent = String(Math.round(obj.val)).padStart(2, '0') },
+                })
+              }
+            },
+            once: true,
+          })
         })
-      })
-    }, sectionRef)
+      }, sectionRef)
+    }
 
-    return () => ctx.revert()
+    init()
+    return () => ctx?.revert()
   }, [reduceMotion])
 
   return (
@@ -51,7 +65,7 @@ export default function Work() {
           <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
             Portfolio
           </p>
-          <h1 className="font-sans text-display font-semibold tracking-tight text-text mb-4">
+          <h1 className="font-unica text-display font-semibold tracking-tight text-text mb-4">
             Selected work
           </h1>
           <p className="text-text-secondary leading-relaxed max-w-xl text-lg">
@@ -75,14 +89,23 @@ export default function Work() {
               >
                 <div className="flex items-start justify-between gap-6">
                   <div className="flex items-start gap-6 min-w-0">
-                    <span className="font-mono text-xs text-text-tertiary tabular-nums pt-1 group-hover:text-accent transition-colors duration-150 shrink-0">
+                    <span
+                      data-work-index
+                      data-target={i + 1}
+                      className="font-mono text-xs text-text-tertiary tabular-nums pt-1 group-hover:text-accent transition-colors duration-150 shrink-0"
+                    >
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
                       <div className="flex items-center gap-4 mb-3">
-                        <h2 className="font-sans text-title font-semibold tracking-tight text-text relative">
+                        <h2 className="font-unica text-title font-semibold tracking-tight text-text relative">
                           {project.title}
-                          <span className="absolute inset-x-0 -bottom-0.5 h-px bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left" />
+                          <motion.span
+                            className="absolute inset-x-0 -bottom-0.5 h-px bg-accent origin-left"
+                            initial={{ scaleX: 0 }}
+                            whileHover={{ scaleX: 1 }}
+                            transition={{ duration: 0.2, ease: 'easeOut' }}
+                          />
                         </h2>
                         <span className="font-mono text-xs text-text-tertiary">{project.year}</span>
                       </div>

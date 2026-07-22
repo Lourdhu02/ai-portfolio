@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'motion/react'
-import { Mail, Phone, MapPin, ExternalLink } from 'lucide-react'
-import { pageVariants, cardVariants, staggerContainer, hoverLift, hoverGlow, pressTap } from '@/lib/motion'
+import { ExternalLink } from 'lucide-react'
+import { pageVariants, staggerContainer } from '@/lib/motion'
 
 const socials = [
   { label: 'LinkedIn', href: 'https://linkedin.com/in/lourdhu' },
@@ -23,7 +23,7 @@ export default function Contact() {
           <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
             Contact
           </p>
-          <h1 className="font-display text-heading-1 font-semibold tracking-tight text-text mb-6">
+          <h1 className="font-unica text-heading-1 font-semibold tracking-tight text-text mb-6">
             Get in touch
           </h1>
           <p className="text-text-secondary leading-relaxed max-w-2xl text-lg">
@@ -35,53 +35,25 @@ export default function Contact() {
 
       <section className="border-t border-border bg-bg-alt/30">
         <div className="w-full px-8 md:px-16 lg:px-24 py-16 md:py-20">
-          <motion.div
-            className="grid gap-4 lg:grid-cols-3"
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-          >
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
             <motion.a
               href="mailto:b.lourdhuraju1234@gmail.com"
-              variants={cardVariants}
-              whileHover={{ ...hoverLift, ...hoverGlow }}
-              whileTap={pressTap}
-              className="border border-border bg-bg p-6 block"
+              className="font-mono text-lg text-accent hover:opacity-80 transition-opacity duration-150"
+              whileHover={{ y: -1 }}
             >
-              <Mail className="w-5 h-5 text-text-tertiary" strokeWidth={1.5} />
-              <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mt-4 mb-2">
-                Email
-              </p>
-              <p className="text-lg font-medium text-text leading-snug break-words">
-                b.lourdhuraju1234@gmail.com
-              </p>
+              b.lourdhuraju1234@gmail.com
             </motion.a>
-
+            <span className="font-mono text-xs text-text-tertiary">/</span>
             <motion.a
               href="tel:+919959594460"
-              variants={cardVariants}
-              whileHover={{ ...hoverLift, ...hoverGlow }}
-              whileTap={pressTap}
-              className="border border-border bg-bg p-6 block"
+              className="font-mono text-base text-text-secondary hover:text-text transition-colors duration-150"
+              whileHover={{ y: -1 }}
             >
-              <Phone className="w-5 h-5 text-text-tertiary" strokeWidth={1.5} />
-              <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mt-4 mb-2">
-                Phone
-              </p>
-              <p className="text-lg font-medium text-text">+91 99595 94460</p>
+              +91 99595 94460
             </motion.a>
-
-            <motion.div
-              variants={cardVariants}
-              className="border border-border bg-bg p-6"
-            >
-              <MapPin className="w-5 h-5 text-text-tertiary" strokeWidth={1.5} />
-              <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mt-4 mb-2">
-                Location
-              </p>
-              <p className="text-lg font-medium text-text">Bengaluru, India</p>
-            </motion.div>
-          </motion.div>
+            <span className="font-mono text-xs text-text-tertiary">/</span>
+            <span className="font-mono text-base text-text-tertiary">Bengaluru, India</span>
+          </div>
         </div>
       </section>
 
@@ -93,7 +65,8 @@ export default function Contact() {
             initial="initial"
             animate="animate"
           >
-            <motion.div variants={cardVariants} className="border border-border bg-bg p-6">
+            <motion.div
+              className="border border-border bg-bg p-6">
               <p className="font-mono text-xs text-text-tertiary tracking-wider uppercase mb-4">
                 Social
               </p>
@@ -117,12 +90,10 @@ export default function Contact() {
             </motion.div>
 
             <motion.div
-              variants={cardVariants}
-              whileHover={{ ...hoverLift, ...hoverGlow }}
-              className="border border-border bg-accent/5 p-6 flex items-center"
+              className="bg-bg-alt/30 p-6 flex items-center"
             >
               <div>
-                <p className="font-display text-lg font-semibold tracking-tight text-text">
+                <p className="font-unica text-lg font-semibold tracking-tight text-text">
                   Available for conversations
                 </p>
                 <p className="text-sm text-text-secondary mt-1">
